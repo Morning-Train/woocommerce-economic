@@ -15,7 +15,8 @@
         }
     ],
     "require": {
-        "php": "^8.1"
+        "php": "^8.1",
+        "morningtrain/morning-train-wp-e-conomic": "*"
     },
     "require-dev": {
         "pestphp/pest": "^2.15",
@@ -24,7 +25,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Morning-Train\\WoocommerceEconomic\\": "src"
+            "MorningTrain\\WoocommerceEconomic\\": "src"
         }
     },
     "autoload-dev": {
@@ -36,6 +37,15 @@
         "test": "vendor/bin/pest",
             "test-coverage": "vendor/bin/pest --coverage",
         "format": "vendor/bin/pint"
+    },
+    "repositories": {
+        "local": {
+            "type": "path",
+            "url": "repos/wp-e-conomic",
+            "options": {
+                "symlink": true
+            }
+        }
     },
     "config": {
         "sort-packages": true,
