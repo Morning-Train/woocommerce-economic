@@ -4,7 +4,6 @@ namespace MorningTrain\WoocommerceEconomic\Services;
 
 class EconomicService
 {
-
     public static function createInvoice($orderId)
     {
         $order = \wc_get_order(4351);
@@ -43,5 +42,4 @@ class EconomicService
             ->create()
             ?->book();
     }
-
 }
