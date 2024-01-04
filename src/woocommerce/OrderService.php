@@ -17,21 +17,21 @@ class OrderService
     public static function createInvoice(\WC_Order $order, $paymentMethod): void
     {
 
-            $vatZone = self::getVatZone($paymentMethod);
+        $vatZone = self::getVatZone($paymentMethod);
 
-            $layout = self::getLayout($paymentMethod);
+        $layout = self::getLayout($paymentMethod);
 
-            $paymentTerm = self::getPaymentTerm($paymentMethod);
+        $paymentTerm = self::getPaymentTerm($paymentMethod);
 
-            $customer = self::getCustomer($order, $vatZone, $paymentTerm, $paymentMethod);
+        $customer = self::getCustomer($order, $vatZone, $paymentTerm, $paymentMethod);
 
-            $recipient = self::getRecipient($order, $vatZone);
+        $recipient = self::getRecipient($order, $vatZone);
 
-            $invoice = self::getDraftInvoice($customer, $layout, $order, $paymentTerm, $recipient);
+        $invoice = self::getDraftInvoice($customer, $layout, $order, $paymentTerm, $recipient);
 
-            $invoice = self::addLineItems($order, $invoice, $paymentMethod);
+        $invoice = self::addLineItems($order, $invoice, $paymentMethod);
 
-            self::createAndBookInvoice($paymentMethod, $invoice);
+        self::createAndBookInvoice($paymentMethod, $invoice);
     }
 
     private static function getVatZone($paymentMethod): ?VatZone
@@ -52,6 +52,7 @@ class OrderService
         if ($layout) {
             return $layout;
         }
+
         return Layout::find($paymentMethod->get_option('economic_layout_number'));
     }
 
@@ -72,19 +73,19 @@ class OrderService
     {
         $customer = apply_filters('woocommerce_economic_invoice_get_customer', null);
 
-        if (!$customer) {
+        if (! $customer) {
             $customer = Customer::where('email', $order->get_billing_email())->first();
 
-            if (!$customer) {
+            if (! $customer) {
                 $customerGroup = apply_filters('woocommerce_economic_invoice_customer_group', null);
 
-                if(! $customerGroup) {
+                if (! $customerGroup) {
                     $customerGroup = $paymentMethod->get_option('economic_customer_group');
                 }
 
                 $customer = Customer::create(
                     name: $order->get_billing_email(),
-                    customerGroup:$customerGroup,
+                    customerGroup: $customerGroup,
                     currency: $order->get_currency(),
                     vatZone: $vatZone,
                     paymentTerms: $paymentTerm,
@@ -106,9 +107,9 @@ class OrderService
         }
 
         return Recipient::new(
-            name: $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name(),
+            name: $order->get_shipping_first_name().' '.$order->get_shipping_last_name(),
             vatZone: $vatZone,
-            address: $order->get_shipping_address_1() . ' ' . $order->get_shipping_address_2(),
+            address: $order->get_shipping_address_1().' '.$order->get_shipping_address_2(),
             zip: $order->get_shipping_postcode(),
             city: $order->get_shipping_city(),
             country: $order->get_shipping_country(),
@@ -139,13 +140,13 @@ class OrderService
 
             if (is_a($customProductLine, ProductLine::class)) {
                 $invoice->addLine($customProductLine);
+
                 return;
             }
 
             $product = self::getEconomicProduct($item, $invoice);
 
-
-            if($product){
+            if ($product) {
                 EconomicLoggerService::critical('Product not found', [
                     'product_id' => $item->get_product_id(),
                     'economic_product_id' => $item->get_meta('economic_product_id'),
@@ -161,12 +162,13 @@ class OrderService
             ));
         });
 
-       $customShippingLine =  apply_filters('woocommerce_economic_invoice_add_shipping_line', null, $order, $invoice);
+        $customShippingLine = apply_filters('woocommerce_economic_invoice_add_shipping_line', null, $order, $invoice);
 
-       if($customShippingLine){
-           $invoice->addLine($customShippingLine);
-           return $invoice;
-       }
+        if ($customShippingLine) {
+            $invoice->addLine($customShippingLine);
+
+            return $invoice;
+        }
 
         $invoice->addLine(ProductLine::new(
             product: $paymentMethod->get_option('economic_shipping_product'),
@@ -187,17 +189,18 @@ class OrderService
 
         if ($paymentMethod->get_option('economic_invoice_draft') === 'book') {
             $invoice->create()?->book();
+
             return;
         }
 
         $invoice->create();
     }
 
-   private static function getEconomicProduct($item, DraftInvoice $invoice): ?Product
+    private static function getEconomicProduct($item, DraftInvoice $invoice): ?Product
     {
         $product = apply_filters('woocommerce_economic_invoice_get_economic_product_line', null, $item, $invoice);
 
-        if (!$product) {
+        if (! $product) {
             $productEconomicId = get_post_meta($item->get_product_id(), 'economic_product_id', true);
 
             $product = Product::find($productEconomicId);
@@ -205,5 +208,4 @@ class OrderService
 
         return $product;
     }
-
 }

@@ -1,6 +1,6 @@
 <?php
-namespace MorningTrain\WoocommerceEconomic\Woocommerce;
 
+namespace MorningTrain\WoocommerceEconomic\Woocommerce;
 
 class ProductService
 {
@@ -21,5 +21,4 @@ class ProductService
         $economic_product_id = $_POST['economic_product_id'] ?? '';
         update_post_meta($post_id, 'economic_product_id', sanitize_text_field($economic_product_id));
     }
-
 }
