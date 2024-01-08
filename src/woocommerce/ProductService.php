@@ -1,6 +1,6 @@
 <?php
 
-namespace MorningTrain\WoocommerceEconomic\Woocommerce;
+namespace Morningtrain\WoocommerceEconomic\Woocommerce;
 
 class ProductService
 {

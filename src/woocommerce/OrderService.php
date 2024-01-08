@@ -1,16 +1,16 @@
 <?php
 
-namespace MorningTrain\WoocommerceEconomic\Woocommerce;
+namespace Morningtrain\WoocommerceEconomic\Woocommerce;
 
-use MorningTrain\Economic\DTOs\Recipient;
-use MorningTrain\Economic\Resources\Customer;
-use MorningTrain\Economic\Resources\Invoice\DraftInvoice;
-use MorningTrain\Economic\Resources\Invoice\ProductLine;
-use MorningTrain\Economic\Resources\Layout;
-use MorningTrain\Economic\Resources\PaymentTerm;
-use MorningTrain\Economic\Resources\Product;
-use MorningTrain\Economic\Resources\VatZone;
-use MorningTrain\Economic\Services\EconomicLoggerService;
+use Morningtrain\Economic\DTOs\Recipient;
+use Morningtrain\Economic\Resources\Customer;
+use Morningtrain\Economic\Resources\Invoice\DraftInvoice;
+use Morningtrain\Economic\Resources\Invoice\ProductLine;
+use Morningtrain\Economic\Resources\Layout;
+use Morningtrain\Economic\Resources\PaymentTerm;
+use Morningtrain\Economic\Resources\Product;
+use Morningtrain\Economic\Resources\VatZone;
+use Morningtrain\Economic\Services\EconomicLoggerService;
 
 class OrderService
 {
@@ -107,9 +107,9 @@ class OrderService
         }
 
         return Recipient::new(
-            name: $order->get_shipping_first_name().' '.$order->get_shipping_last_name(),
+            name: $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name(),
             vatZone: $vatZone,
-            address: $order->get_shipping_address_1().' '.$order->get_shipping_address_2(),
+            address: $order->get_shipping_address_1() . ' ' . $order->get_shipping_address_2(),
             zip: $order->get_shipping_postcode(),
             city: $order->get_shipping_city(),
             country: $order->get_shipping_country(),
@@ -124,7 +124,8 @@ class OrderService
             return $invoice;
         }
 
-        return DraftInvoice::new(customer: $customer->customerNumber,
+        return DraftInvoice::new(
+            customer: $customer->customerNumber,
             layout: $layout,
             currency: $order->get_currency(),
             paymentTerms: $paymentTerm,
@@ -204,6 +205,7 @@ class OrderService
             $productEconomicId = get_post_meta($item->get_product_id(), 'economic_product_id', true);
 
             $product = Product::find($productEconomicId);
+            ray($product);
         }
 
         return $product;

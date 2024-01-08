@@ -1,9 +1,9 @@
 <?php
 
-namespace MorningTrain\WoocommerceEconomic;
+namespace Morningtrain\WoocommerceEconomic;
 
-use MorningTrain\WoocommerceEconomic\Services\ActionScheduleService;
-use MorningTrain\WoocommerceEconomic\Woocommerce\ProductService;
+use Morningtrain\WoocommerceEconomic\Services\ActionScheduleService;
+use Morningtrain\WoocommerceEconomic\Woocommerce\ProductService;
 
 class WoocommerceEconomic
 {
@@ -28,6 +28,6 @@ class WoocommerceEconomic
 
     public static function requireGateway(): void
     {
-        require_once __DIR__.'/woocommerce/WC_Gateway_Economic_Invoice.php';
+        require_once __DIR__ . '/woocommerce/WC_Gateway_Economic_Invoice.php';
     }
 }
