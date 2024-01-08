@@ -1,4 +1,4 @@
-# This is a wrapper for integrating with e-conomic for woocommerce
+# PHP SDK for integrating with e-conomic for woocommerce
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/morning-train/woocommerce-economic.svg?style=flat-square)](https://packagist.org/packages/morning-train/woocommerce-economic)
 [![Tests](https://img.shields.io/github/actions/workflow/status/morning-train/woocommerce-economic/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/morning-train/woocommerce-economic/actions/workflows/run-tests.yml)
