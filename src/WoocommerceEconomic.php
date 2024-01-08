@@ -28,6 +28,6 @@ class WoocommerceEconomic
 
     public static function requireGateway(): void
     {
-        require_once __DIR__ . '/woocommerce/WC_Gateway_Economic_Invoice.php';
+        require_once __DIR__.'/woocommerce/WC_Gateway_Economic_Invoice.php';
     }
 }

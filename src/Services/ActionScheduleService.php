@@ -11,7 +11,7 @@ class ActionScheduleService
 
     public static function addCreateInvoiceJob(\WC_Order $order): void
     {
-        \as_schedule_single_action(time(), static::CREATE_INVOICE, [ $order->get_id()]);
+        \as_schedule_single_action(time(), static::CREATE_INVOICE, [$order->get_id()]);
     }
 
     public static function handleCreateInvoiceJob(int $orderId): void
