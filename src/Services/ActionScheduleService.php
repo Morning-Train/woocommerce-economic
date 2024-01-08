@@ -1,21 +1,25 @@
 <?php
 
-namespace MorningTrain\WoocommerceEconomic\Services;
+namespace Morningtrain\WoocommerceEconomic\Services;
 
-use MorningTrain\Economic\Services\EconomicLoggerService;
-use MorningTrain\WoocommerceEconomic\Woocommerce\OrderService;
+use Morningtrain\Economic\Services\EconomicLoggerService;
+use Morningtrain\WoocommerceEconomic\Woocommerce\OrderService;
 
 class ActionScheduleService
 {
     public const CREATE_INVOICE = 'mt-wc-economic/create-invoice';
 
-    public static function addCreateInvoiceJob(\WC_Order $order, \WC_Payment_Gateway $paymentMethod): void
+    public static function addCreateInvoiceJob(\WC_Order $order): void
     {
-        \as_schedule_single_action(time(), static::CREATE_INVOICE, ['order' => $order, 'paymentMethod' => $paymentMethod]);
+        \as_schedule_single_action(time(), static::CREATE_INVOICE, [ $order->get_id()]);
     }
 
-    public static function handleCreateInvoiceJob(\WC_Order $order, \WC_Payment_Gateway $paymentMethod): void
+    public static function handleCreateInvoiceJob(int $orderId): void
     {
+        $order = \wc_get_order($orderId);
+
+        $paymentMethod = wc_get_payment_gateway_by_order($orderId);
+
         try {
             OrderService::createInvoice($order, $paymentMethod);
         } catch (\Exception $e) {
