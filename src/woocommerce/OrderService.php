@@ -107,9 +107,9 @@ class OrderService
         }
 
         return Recipient::new(
-            name: $order->get_shipping_first_name().' '.$order->get_shipping_last_name(),
+            name: $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name(),
             vatZone: $vatZone,
-            address: $order->get_shipping_address_1().' '.$order->get_shipping_address_2(),
+            address: $order->get_shipping_address_1() . ' ' . $order->get_shipping_address_2(),
             zip: $order->get_shipping_postcode(),
             city: $order->get_shipping_city(),
             country: $order->get_shipping_country(),
@@ -147,7 +147,7 @@ class OrderService
 
             $product = self::getEconomicProduct($item, $invoice);
 
-            if ($product) {
+            if (! $product) {
                 EconomicLoggerService::critical('Product not found', [
                     'product_id' => $item->get_product_id(),
                     'economic_product_id' => $item->get_meta('economic_product_id'),
@@ -160,6 +160,7 @@ class OrderService
                 product: $product->productNumber,
                 quantity: $item->get_quantity(),
                 unitNetPrice: $item->get_total(),
+                description: $item->get_name(),
             ));
         });
 
@@ -175,6 +176,7 @@ class OrderService
             product: $paymentMethod->get_option('economic_shipping_product'),
             quantity: 1,
             unitNetPrice: $order->get_shipping_total(),
+            description: __('Fragt', 'mt-wc-economic'),
         ));
 
         return $invoice;
