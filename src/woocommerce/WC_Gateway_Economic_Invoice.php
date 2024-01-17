@@ -279,6 +279,10 @@ class WC_Gateway_Economic_Invoice extends \WC_Payment_Gateway
 
     public function isSettingsPage()
     {
+        if(! is_admin() || ! function_exists('get_current_screen')){
+            return false;
+        }
+
         $currentScreen = get_current_screen();
 
         return $currentScreen->base === 'woocommerce_page_wc-settings' &&
