@@ -4,6 +4,13 @@ namespace Morningtrain\WoocommerceEconomic\Woocommerce;
 
 class ProductService
 {
+    public static function addEconomicProductFieldWithWrapper(): void
+    {
+        echo '<div class="options_group pricing show_if_simple hidden">';
+        self::addEconomicProductField();
+        echo '</div>';
+    }
+
     public static function addEconomicProductField(): void
     {
         woocommerce_wp_text_input([
