@@ -107,9 +107,9 @@ class OrderService
         }
 
         return Recipient::new(
-            name: $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name(),
+            name: $order->get_shipping_first_name().' '.$order->get_shipping_last_name(),
             vatZone: $vatZone,
-            address: $order->get_shipping_address_1() . ' ' . $order->get_shipping_address_2(),
+            address: $order->get_shipping_address_1().' '.$order->get_shipping_address_2(),
             zip: $order->get_shipping_postcode(),
             city: $order->get_shipping_city(),
             country: $order->get_shipping_country(),
