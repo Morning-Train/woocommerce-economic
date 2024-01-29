@@ -279,14 +279,12 @@ class WC_Gateway_Economic_Invoice extends \WC_Payment_Gateway
 
     public function isSettingsPage()
     {
-        if (! is_admin() || ! function_exists('get_current_screen')) {
+        if (! is_admin()) {
             return false;
         }
 
-        $currentScreen = get_current_screen();
-
-        return $currentScreen->base === 'woocommerce_page_wc-settings' &&
-            isset($_GET['tab']) && $_GET['tab'] === 'checkout' &&
-            isset($_GET['section']) && $_GET['section'] === 'economic_invoice';
+        return ! empty($_GET['page']) && $_GET['page'] === 'wc-settings' &&
+            ! empty($_GET['tab']) && $_GET['tab'] === 'checkout' &&
+            ! empty($_GET['section']) && $_GET['section'] === 'economic_invoice';
     }
 }
