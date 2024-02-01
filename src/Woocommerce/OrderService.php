@@ -199,15 +199,14 @@ class OrderService
         $invoice->create();
     }
 
-    private static function getEconomicProduct($item, DraftInvoice $invoice): ?Product
+    private static function getEconomicProduct(\WC_Order_Item_Product $item, DraftInvoice $invoice): ?Product
     {
         $product = apply_filters('woocommerce_economic_invoice_get_economic_product_line', null, $item, $invoice);
 
         if (! $product) {
-            $productEconomicId = get_post_meta($item->get_product_id(), 'economic_product_id', true);
+            $productEconomicId = get_post_meta($item->get_variation_id() ?? $item->get_product_id(), 'economic_product_id', true);
 
             $product = Product::find($productEconomicId);
-            ray($product);
         }
 
         return $product;
