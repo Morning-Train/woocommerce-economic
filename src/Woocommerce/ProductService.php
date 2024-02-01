@@ -19,7 +19,7 @@ class ProductService
         echo '</div>';
     }
 
-    public static function addEconomicProductField( $loop, $variation_data, $variation): void
+    public static function addEconomicProductField($loop, $variation_data, $variation): void
     {
         woocommerce_wp_text_input([
             'id' => 'economic_product_id_'."[{$loop}]",
