@@ -12,7 +12,7 @@ class WoocommerceEconomic
         add_filter('woocommerce_payment_gateways', [self::class, 'registerGateway'], 10, 1);
         add_action('init', [self::class, 'requireGateway'], 1);
         add_action('woocommerce_product_options_general_product_data', [ProductService::class, 'addEconomicProductFieldWithWrapper']);
-        add_action('woocommerce_variation_options', [ProductService::class, 'addEconomicProductField'],10,3);
+        add_action('woocommerce_variation_options', [ProductService::class, 'addEconomicProductField'], 10, 3);
         add_action('woocommerce_save_product_variation', [ProductService::class, 'saveVariationEconomicProductField'], 10, 2);
         add_action('woocommerce_process_product_meta', [ProductService::class, 'saveEconomicProductField'], 10, 1);
         add_action(ActionScheduleService::CREATE_INVOICE, [ActionScheduleService::class, 'handleCreateInvoiceJob'], 10, 1);
