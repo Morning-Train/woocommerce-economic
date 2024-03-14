@@ -2,21 +2,23 @@
 
 namespace Morningtrain\WoocommerceEconomic\Woocommerce;
 
-use Morningtrain\Economic\DTOs\Recipient;
+
+use Morningtrain\Economic\DTOs\Invoice\ProductLine;
+use Morningtrain\Economic\DTOs\Invoice\Recipient;
 use Morningtrain\Economic\Resources\Customer;
+use Morningtrain\Economic\Resources\Invoice\BookedInvoice;
 use Morningtrain\Economic\Resources\Invoice\DraftInvoice;
-use Morningtrain\Economic\Resources\Invoice\ProductLine;
 use Morningtrain\Economic\Resources\Layout;
 use Morningtrain\Economic\Resources\PaymentTerm;
 use Morningtrain\Economic\Resources\Product;
 use Morningtrain\Economic\Resources\VatZone;
 use Morningtrain\Economic\Services\EconomicLoggerService;
 
+
 class OrderService
 {
     public static function createInvoice(\WC_Order $order, $paymentMethod): void
     {
-
         $vatZone = self::getVatZone($paymentMethod);
 
         $layout = self::getLayout($paymentMethod);
@@ -31,7 +33,7 @@ class OrderService
 
         $invoice = self::addLineItems($order, $invoice, $paymentMethod);
 
-        self::createAndBookInvoice($paymentMethod, $invoice);
+        self::createAndBookInvoice($paymentMethod, $invoice, $customer);
     }
 
     private static function getVatZone($paymentMethod): ?VatZone
@@ -107,9 +109,9 @@ class OrderService
         }
 
         return Recipient::new(
-            name: $order->get_shipping_first_name().' '.$order->get_shipping_last_name(),
+            name: $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name(),
             vatZone: $vatZone,
-            address: $order->get_shipping_address_1().' '.$order->get_shipping_address_2(),
+            address: $order->get_shipping_address_1() . ' ' . $order->get_shipping_address_2(),
             zip: $order->get_shipping_postcode(),
             city: $order->get_shipping_city(),
             country: $order->get_shipping_country(),
@@ -157,7 +159,7 @@ class OrderService
             }
 
             $invoice->addLine(ProductLine::new(
-                product: $product->productNumber,
+                product: $product,
                 quantity: $item->get_quantity(),
                 unitNetPrice: $item->get_total(),
                 description: $item->get_name(),
@@ -182,7 +184,7 @@ class OrderService
         return $invoice;
     }
 
-    private static function createAndBookInvoice($paymentMethod, DraftInvoice $invoice): void
+    private static function createAndBookInvoice($paymentMethod, DraftInvoice $invoice, Customer $customer): void
     {
         $customInvoice = apply_filters('woocommerce_economic_invoice_create_and_book_invoice', null, $paymentMethod, $invoice);
 
@@ -190,13 +192,22 @@ class OrderService
             return;
         }
 
-        if ($paymentMethod->get_option('economic_invoice_draft') === 'book') {
-            $invoice->create()?->book();
 
+        $draftInvoice = $invoice->save();
+
+        if($draftInvoice === null) {
             return;
         }
 
-        $invoice->create();
+
+        if ($paymentMethod->get_option('economic_invoice_draft') === 'book') {
+
+            $bookedInvoice =  BookedInvoice::createFromDraft($draftInvoice->draftInvoiceNumber);
+
+            self::sendInvoicePdf($bookedInvoice, $customer);
+
+            return;
+        }
     }
 
     private static function getEconomicProduct(\WC_Order_Item_Product $item, DraftInvoice $invoice): ?Product
@@ -204,11 +215,32 @@ class OrderService
         $product = apply_filters('woocommerce_economic_invoice_get_economic_product_line', null, $item, $invoice);
 
         if (! $product) {
-            $productEconomicId = get_post_meta($item->get_variation_id() ?? $item->get_product_id(), 'economic_product_id', true);
+            $productEconomicId = get_post_meta(! empty($item->get_variation_id()) ? $item->get_variation_id() : $item->get_product_id(), 'economic_product_id', true);
 
             $product = Product::find($productEconomicId);
         }
 
         return $product;
+    }
+
+    public static function sendInvoicePdf(BookedInvoice $bookedInvoice, Customer $customer)
+    {
+        $mailRecipient = $customer->email;
+
+        $fileName =  $bookedInvoice->bookedInvoiceNumber .'-'.$customer->name . '-' . time() . '.pdf';
+
+        $file =  $bookedInvoice->pdf->getPdfContentResponse()->getBody(); //example.pdf
+
+        $filepath = WP_CONTENT_DIR . '/private/'. $fileName;
+
+        $fp = fopen($filepath, "w");
+        fwrite($fp, $file);
+
+        if(fclose($fp)){
+            $mail = \wp_mail($mailRecipient, 'Faktura', 'Se vedhæftet faktura', '', $filepath); //TODO: Style mail
+            if($mail){
+                unlink($filepath);
+            }
+        }
     }
 }
