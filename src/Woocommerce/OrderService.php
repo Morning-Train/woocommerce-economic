@@ -2,7 +2,6 @@
 
 namespace Morningtrain\WoocommerceEconomic\Woocommerce;
 
-
 use Morningtrain\Economic\DTOs\Invoice\ProductLine;
 use Morningtrain\Economic\DTOs\Invoice\Recipient;
 use Morningtrain\Economic\Resources\Customer;
@@ -13,7 +12,6 @@ use Morningtrain\Economic\Resources\PaymentTerm;
 use Morningtrain\Economic\Resources\Product;
 use Morningtrain\Economic\Resources\VatZone;
 use Morningtrain\Economic\Services\EconomicLoggerService;
-
 
 class OrderService
 {
@@ -109,9 +107,9 @@ class OrderService
         }
 
         return Recipient::new(
-            name: $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name(),
+            name: $order->get_shipping_first_name().' '.$order->get_shipping_last_name(),
             vatZone: $vatZone,
-            address: $order->get_shipping_address_1() . ' ' . $order->get_shipping_address_2(),
+            address: $order->get_shipping_address_1().' '.$order->get_shipping_address_2(),
             zip: $order->get_shipping_postcode(),
             city: $order->get_shipping_city(),
             country: $order->get_shipping_country(),
@@ -192,17 +190,15 @@ class OrderService
             return;
         }
 
-
         $draftInvoice = $invoice->save();
 
-        if($draftInvoice === null) {
+        if ($draftInvoice === null) {
             return;
         }
 
-
         if ($paymentMethod->get_option('economic_invoice_draft') === 'book') {
 
-            $bookedInvoice =  BookedInvoice::createFromDraft($draftInvoice->draftInvoiceNumber);
+            $bookedInvoice = BookedInvoice::createFromDraft($draftInvoice->draftInvoiceNumber);
 
             self::sendInvoicePdf($bookedInvoice, $customer);
 
@@ -227,18 +223,18 @@ class OrderService
     {
         $mailRecipient = $customer->email;
 
-        $fileName =  $bookedInvoice->bookedInvoiceNumber .'-'.$customer->name . '-' . time() . '.pdf';
+        $fileName = $bookedInvoice->bookedInvoiceNumber.'-'.$customer->name.'-'.time().'.pdf';
 
-        $file =  $bookedInvoice->pdf->getPdfContentResponse()->getBody(); //example.pdf
+        $file = $bookedInvoice->pdf->getPdfContentResponse()->getBody(); //example.pdf
 
-        $filepath = WP_CONTENT_DIR . '/private/'. $fileName;
+        $filepath = WP_CONTENT_DIR.'/private/'.$fileName;
 
-        $fp = fopen($filepath, "w");
+        $fp = fopen($filepath, 'w');
         fwrite($fp, $file);
 
-        if(fclose($fp)){
+        if (fclose($fp)) {
             $mail = \wp_mail($mailRecipient, 'Faktura', 'Se vedhæftet faktura', '', $filepath); //TODO: Style mail
-            if($mail){
+            if ($mail) {
                 unlink($filepath);
             }
         }
