@@ -22,7 +22,7 @@ class ProductService
     public static function addEconomicProductField($loop, $variation_data, $variation): void
     {
         woocommerce_wp_text_input([
-            'id' => 'economic_product_id_'."[{$loop}]",
+            'id' => 'economic_product_id_' . "[{$loop}]",
             'label' => __('E-conomic produkt id', 'mt-wc-economic'),
             'placeholder' => __('E-conomic produkt id', 'mt-wc-economic'),
             'desc_tip' => 'true',
