@@ -20,6 +20,9 @@ class WoocommerceEconomic
 
     public static function registerGateway($gateways): array
     {
+        if (! class_exists('WC_Payment_Gateway')) {
+            return $gateways;
+        }
         $gateways[] = \WC_Gateway_Economic_Invoice::class;
 
         return $gateways;
@@ -27,6 +30,9 @@ class WoocommerceEconomic
 
     public static function requireGateway(): void
     {
-        require_once __DIR__.'/Woocommerce/WC_Gateway_Economic_Invoice.php';
+        if (! class_exists('WC_Payment_Gateway')) {
+            return;
+        }
+        require_once __DIR__ . '/Woocommerce/WC_Gateway_Economic_Invoice.php';
     }
 }
