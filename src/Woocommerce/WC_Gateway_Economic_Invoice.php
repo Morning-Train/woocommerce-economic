@@ -37,7 +37,7 @@ class WC_Gateway_Economic_Invoice extends \WC_Payment_Gateway
 
     public function init_form_fields(): void
     {
-        $this->form_fields = [
+        $this->form_fields = \apply_filters('woocommerce-economic/wc-gateway/form-fields', [
             'enabled' => [
                 'title' => __('Aktiver/Deaktiver', 'mt-wc-economic'),
                 'type' => 'checkbox',
@@ -145,7 +145,7 @@ class WC_Gateway_Economic_Invoice extends \WC_Payment_Gateway
                 'default' => '',
                 'desc_tip' => true,
             ],
-        ];
+        ]);
 
     }
 
