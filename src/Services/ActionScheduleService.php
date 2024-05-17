@@ -22,11 +22,17 @@ class ActionScheduleService
 
         try {
             OrderService::createInvoice($order, $paymentMethod);
+
+            $order->add_order_note(__('<strong><u>Ordren er oprettet i Economic.</u></strong>', 'mt-wc-economic'));
         } catch (\Exception $e) {
             EconomicLoggerService::critical('Could not create invoice', [
                 'exception' => $e,
             ]);
 
+            $order->add_order_note(sprintf(
+                __('<strong><u>Kunne ikke oprette ordre i Economic.</u></strong><br />%s', 'mt-wc-economic'),
+                method_exists($e, 'getDetailedMessage') ? $e->getDetailedMessage() : $e->getMessage(),
+            ));
             $order->update_status('failed');
         }
 
