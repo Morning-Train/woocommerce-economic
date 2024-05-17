@@ -11,6 +11,7 @@ use Morningtrain\Economic\Resources\Layout;
 use Morningtrain\Economic\Resources\PaymentTerm;
 use Morningtrain\Economic\Resources\Product;
 use Morningtrain\Economic\Resources\VatZone;
+use Morningtrain\Economic\Services\EconomicApiService;
 use Morningtrain\Economic\Services\EconomicLoggerService;
 
 class OrderService
@@ -71,31 +72,34 @@ class OrderService
 
     private static function getCustomer(\WC_Order $order, ?VatZone $vatZone, PaymentTerm $paymentTerm, \WC_Gateway_Economic_Invoice $paymentMethod): mixed
     {
-        $customer = apply_filters('woocommerce_economic_invoice_get_customer', null);
+        $customer = apply_filters('woocommerce-economic/order/customer', null, $order, $vatZone, $paymentTerm, $paymentMethod);
 
-        if (! $customer) {
-            $customer = Customer::where('email', $order->get_billing_email())->first();
-
-            if (! $customer) {
-                $customerGroup = apply_filters('woocommerce_economic_invoice_customer_group', null);
-
-                if (! $customerGroup) {
-                    $customerGroup = $paymentMethod->get_option('economic_customer_group');
-                }
-
-                $customer = Customer::create(
-                    name: $order->get_billing_email(),
-                    customerGroup: $customerGroup,
-                    currency: $order->get_currency(),
-                    vatZone: $vatZone,
-                    paymentTerms: $paymentTerm,
-                    email: $order->get_billing_email(),
-                    ean: get_metadata('post', $order->get_id(), 'economic_billing_ean', true)
-                );
-            }
+        if ($customer !== null) {
+            return $customer;
         }
 
-        return $customer;
+        $customer = Customer::where('email', $order->get_billing_email())
+            ->first();
+
+        if (! empty($customer)) {
+            return $customer;
+        }
+
+        $customerGroup = apply_filters('woocommerce-economic/order/customer-group', null, $order, $vatZone, $paymentTerm, $paymentMethod);
+
+        if (! $customerGroup) {
+            $customerGroup = $paymentMethod->get_option('economic_customer_group');
+        }
+
+        return Customer::create(
+            name: $order->get_billing_email(),
+            customerGroup: $customerGroup,
+            currency: $order->get_currency(),
+            vatZone: $vatZone,
+            paymentTerms: $paymentTerm,
+            email: $order->get_billing_email(),
+            ean: get_metadata('post', $order->get_id(), 'economic_billing_ean', true)
+        );
     }
 
     private static function getRecipient(\WC_Order $order, ?VatZone $vatZone): Recipient
@@ -172,8 +176,19 @@ class OrderService
             return $invoice;
         }
 
+        $shippingProductId = $paymentMethod->get_option('economic_shipping_product');
+        $shippingProduct = Product::find($shippingProductId);
+
+        if (! $shippingProduct) {
+            EconomicLoggerService::critical('Shipping product not found', [
+                'economic_product_id' => $shippingProductId,
+            ]);
+
+            throw new \Exception('Shipping product not found');
+        }
+
         $invoice->addLine(ProductLine::new(
-            product: $paymentMethod->get_option('economic_shipping_product'),
+            product: $shippingProduct,
             quantity: 1,
             unitNetPrice: $order->get_shipping_total(),
             description: __('Fragt', 'mt-wc-economic'),
@@ -225,7 +240,7 @@ class OrderService
 
         $fileName = $bookedInvoice->bookedInvoiceNumber.'-'.$customer->name.'-'.time().'.pdf';
 
-        $file = $bookedInvoice->pdf->getPdfContentResponse()->getBody(); //example.pdf
+        $file = EconomicApiService::get($bookedInvoice->pdf->download)->getBody();
 
         $filepath = WP_CONTENT_DIR.'/private/'.$fileName;
 
