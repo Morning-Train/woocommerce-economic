@@ -16,7 +16,7 @@
     ],
     "require": {
         "php": "^8.1",
-        "morningtrain/wp-economic": "v0.7"
+        "morningtrain/wp-economic": "^v0.7.1"
     },
     "require-dev": {
         "pestphp/pest": "^2.15",
