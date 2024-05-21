@@ -237,7 +237,7 @@ class OrderService
     public static function sendInvoicePdf(BookedInvoice $bookedInvoice, Customer $customer)
     {
         $mailRecipient = $customer->email;
-        $folder = WP_CONTENT_DIR . '/private/';
+        $folder = WP_CONTENT_DIR.'/private/';
         $file = EconomicApiService::get($bookedInvoice->pdf->download)->getBody();
 
         // We only want to create the folder if it doesn't exist
@@ -246,7 +246,7 @@ class OrderService
             mkdir($folder, 0770, true);
         }
 
-        $filepath = $folder . $bookedInvoice->bookedInvoiceNumber . '-' . $customer->name . '-' . time() . '.pdf';
+        $filepath = $folder.$bookedInvoice->bookedInvoiceNumber.'-'.$customer->name.'-'.time().'.pdf';
 
         $fp = fopen($filepath, 'w');
         fwrite($fp, $file);
