@@ -193,7 +193,7 @@ class OrderService
             product: $shippingProduct,
             quantity: 1,
             unitNetPrice: $order->get_shipping_total(),
-            description: __('Fragt', 'mt-wc-economic'),
+            description: ! empty($shippingProduct->name) ? $shippingProduct->name : __('Fragt', 'mt-wc-economic'),
         ));
 
         return $invoice;
