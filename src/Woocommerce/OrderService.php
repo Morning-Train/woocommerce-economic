@@ -4,6 +4,7 @@ namespace Morningtrain\WoocommerceEconomic\Woocommerce;
 
 use Morningtrain\Economic\DTOs\Invoice\ProductLine;
 use Morningtrain\Economic\DTOs\Invoice\Recipient;
+use Morningtrain\Economic\DTOs\Invoice\Reference;
 use Morningtrain\Economic\Resources\Customer;
 use Morningtrain\Economic\Resources\Invoice\BookedInvoice;
 use Morningtrain\Economic\Resources\Invoice\DraftInvoice;
@@ -111,9 +112,9 @@ class OrderService
         }
 
         return Recipient::new(
-            name: $order->get_shipping_first_name().' '.$order->get_shipping_last_name(),
+            name: $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name(),
             vatZone: $vatZone,
-            address: $order->get_shipping_address_1().' '.$order->get_shipping_address_2(),
+            address: $order->get_shipping_address_1() . ' ' . $order->get_shipping_address_2(),
             zip: $order->get_shipping_postcode(),
             city: $order->get_shipping_city(),
             country: $order->get_shipping_country(),
@@ -237,7 +238,7 @@ class OrderService
     public static function sendInvoicePdf(BookedInvoice $bookedInvoice, Customer $customer)
     {
         $mailRecipient = $customer->email;
-        $folder = WP_CONTENT_DIR.'/private/';
+        $folder = WP_CONTENT_DIR . '/private/';
         $file = EconomicApiService::get($bookedInvoice->pdf->download)->getBody();
 
         // We only want to create the folder if it doesn't exist
@@ -246,7 +247,7 @@ class OrderService
             mkdir($folder, 0770, true);
         }
 
-        $filepath = $folder.$bookedInvoice->bookedInvoiceNumber.'-'.$customer->name.'-'.time().'.pdf';
+        $filepath = $folder . $bookedInvoice->bookedInvoiceNumber . '-' . $customer->name . '-' . time() . '.pdf';
 
         $fp = fopen($filepath, 'w');
         fwrite($fp, $file);
