@@ -33,6 +33,6 @@ class WoocommerceEconomic
         if (! class_exists('WC_Payment_Gateway')) {
             return;
         }
-        require_once __DIR__ . '/Woocommerce/WC_Gateway_Economic_Invoice.php';
+        require_once __DIR__.'/Woocommerce/WC_Gateway_Economic_Invoice.php';
     }
 }

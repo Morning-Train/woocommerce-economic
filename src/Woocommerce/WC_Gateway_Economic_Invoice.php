@@ -24,7 +24,7 @@ class WC_Gateway_Economic_Invoice extends \WC_Payment_Gateway
         $this->description = $this->get_option('description');
 
         // This action hook saves the settings
-        add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
+        add_action('woocommerce_update_options_payment_gateways_'.$this->id, [$this, 'process_admin_options']);
 
         add_action('woocommerce_new_order', [$this, 'onNewOrder'], 10, 1);
         add_action('woocommerce_order_status_completed', [$this, 'onOrderCompleted'], 10, 1);
@@ -274,7 +274,7 @@ class WC_Gateway_Economic_Invoice extends \WC_Payment_Gateway
 
     public function addEanFieldFisplayAdminOrderMeta($order): void
     {
-        echo '<p><strong>' . __('EAN nummer', 'woocommerce') . ':</strong> ' . get_post_meta($order->get_id(), 'economic_billing_ean', true) . '</p>';
+        echo '<p><strong>'.__('EAN nummer', 'woocommerce').':</strong> '.get_post_meta($order->get_id(), 'economic_billing_ean', true).'</p>';
     }
 
     public function isSettingsPage()
