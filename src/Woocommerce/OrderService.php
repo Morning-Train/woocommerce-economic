@@ -136,6 +136,7 @@ class OrderService
             paymentTerms: $paymentTerm,
             date: new \DateTime(current_time('mysql')),
             recipient: $recipient,
+            references: apply_filters('woocommerce-economic/order/draft-invoice-references', null, $order, $customer),
         );
     }
 
