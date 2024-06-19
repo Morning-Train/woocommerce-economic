@@ -165,7 +165,7 @@ class OrderService
             $invoice->addLine(ProductLine::new(
                 product: $product,
                 quantity: $item->get_quantity(),
-                unitNetPrice: $item->get_total(),
+                unitNetPrice: ((int) $item->get_total()) / $item->get_quantity(),
                 description: $item->get_name(),
             ));
         });
