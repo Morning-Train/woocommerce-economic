@@ -161,10 +161,11 @@ class OrderService
                 throw new \Exception('Product not found');
             }
 
+            $unitNetPrice = ((float) $item->get_total()) / $item->get_quantity();
             $invoice->addLine(ProductLine::new(
                 product: $product,
                 quantity: $item->get_quantity(),
-                unitNetPrice: ((int) $item->get_total()) / $item->get_quantity(),
+                unitNetPrice: round($unitNetPrice, 2),
                 description: $item->get_name(),
             ));
         });
