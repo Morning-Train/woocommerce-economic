@@ -177,7 +177,7 @@ class WC_Gateway_Economic_Invoice extends \WC_Payment_Gateway
         ActionScheduleService::addCreateInvoiceJob($order);
     }
 
-    public function onNewOrder(int $orderId,$statusFrom, $statusTo, $that ): void
+    public function onNewOrder(int $orderId, $statusFrom, $statusTo, $that): void
     {
         if ($this->get_option('economic_invoice_event') === 'creation' && $statusTo === 'processing') {
             $this->createEconomicInvoice($orderId);
