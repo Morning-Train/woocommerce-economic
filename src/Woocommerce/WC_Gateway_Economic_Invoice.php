@@ -26,7 +26,7 @@ class WC_Gateway_Economic_Invoice extends \WC_Payment_Gateway
         // This action hook saves the settings
         add_action('woocommerce_update_options_payment_gateways_'.$this->id, [$this, 'process_admin_options']);
 
-        add_action('woocommerce_new_order', [$this, 'onNewOrder'], 10, 1);
+        add_action('woocommerce_order_status_changed', [$this, 'onNewOrder'], 10, 4);
         add_action('woocommerce_order_status_completed', [$this, 'onOrderCompleted'], 10, 1);
         add_filter('woocommerce_checkout_fields', [$this, 'addEanField']);
         add_action('woocommerce_checkout_process', [$this, 'validateEanField']);
@@ -177,9 +177,9 @@ class WC_Gateway_Economic_Invoice extends \WC_Payment_Gateway
         ActionScheduleService::addCreateInvoiceJob($order);
     }
 
-    public function onNewOrder(int $orderId): void
+    public function onNewOrder(int $orderId,$statusFrom, $statusTo, $that ): void
     {
-        if ($this->get_option('economic_invoice_event') === 'creation') {
+        if ($this->get_option('economic_invoice_event') === 'creation' && $statusTo === 'processing') {
             $this->createEconomicInvoice($orderId);
         }
     }
