@@ -104,7 +104,7 @@ class OrderService
 
     private static function getRecipient(\WC_Order $order, ?VatZone $vatZone): Recipient
     {
-        $recipient = apply_filters('woocommerce_economic_invoice_get_recipient', null);
+        $recipient = apply_filters('woocommerce_economic_invoice_get_recipient', $order, $vatZone);
 
         if ($recipient) {
             return $recipient;
