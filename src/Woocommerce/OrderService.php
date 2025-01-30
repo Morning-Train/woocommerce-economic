@@ -162,12 +162,15 @@ class OrderService
                 throw new \Exception('Product not found');
             }
 
-            $unitNetPrice = ((float) $item->get_total()) / $item->get_quantity();
+            $unitNetPrice = ((float) $item->get_subtotal()) / $item->get_quantity();
+            $unitNetPriceWithDiscount = ((float) $item->get_total()) / $item->get_quantity();
+            $hasDiscount = $item->get_subtotal() !== $item->get_total();
             $invoice->addLine(ProductLine::new(
                 product: $product,
                 quantity: $item->get_quantity(),
                 unitNetPrice: round($unitNetPrice, 2),
                 description: $item->get_name(),
+                discountPercentage: $hasDiscount ? ($unitNetPriceWithDiscount / $unitNetPrice) * 100 : null,
             ));
         });
 
