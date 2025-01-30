@@ -248,7 +248,7 @@ class WC_Gateway_Economic_Invoice extends \WC_Payment_Gateway
             'required' => false,
             'class' => ['form-row-wide'],
             'clear' => true,
-            'priority' => 31, //after billing_company
+            'priority' => 31, // after billing_company
         ];
 
         return $fields;

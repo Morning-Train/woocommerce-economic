@@ -258,7 +258,7 @@ class OrderService
         fwrite($fp, $file);
 
         if (fclose($fp)) {
-            $mail = \wp_mail($mailRecipient, 'Faktura', 'Se vedhæftet faktura', '', $filepath); //TODO: Style mail
+            $mail = \wp_mail($mailRecipient, 'Faktura', 'Se vedhæftet faktura', '', $filepath); // TODO: Style mail
             if ($mail) {
                 unlink($filepath);
             }
