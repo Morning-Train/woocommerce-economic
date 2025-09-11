@@ -170,7 +170,7 @@ class OrderService
                 quantity: $item->get_quantity(),
                 unitNetPrice: round($unitNetPrice, 2),
                 description: $item->get_name(),
-                discountPercentage: $hasDiscount ? ($unitNetPriceWithDiscount / $unitNetPrice) * 100 : null,
+                discountPercentage: $hasDiscount ? 100 - (($unitNetPriceWithDiscount / $unitNetPrice) * 100) : null,
             ));
         });
 
