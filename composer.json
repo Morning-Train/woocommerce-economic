@@ -1,9 +1,12 @@
 {
     "name": "morningtrain/woocommerce-economic",
-    "description": "This is my package woocommerce-economic",
+    "description": "This is a wrapper for integrating with e-conomic for woocommerce using the WP-Economic Package",
     "keywords": [
-        "Morning-Train",
-        "woocommerce-economic"
+        "morningtrain",
+        "woocommerce-economic",
+        "econonmic",
+        "woocommerce",
+        "wordpress"
     ],
     "homepage": "https://github.com/morning-train/woocommerce-economic",
     "license": "MIT",
@@ -12,11 +15,15 @@
             "name": "Lars Rasmussen",
             "email": "laras@morningtrain.dk",
             "role": "Developer"
+        },
+        {
+            "name": "Martin Schadegg Brønniche",
+            "email": "ms@morningtrain.dk"
         }
     ],
     "require": {
         "php": "^8.1",
-        "morningtrain/wp-economic": "^v0.7.1"
+        "morningtrain/wp-economic": "^v1.2.0"
     },
     "require-dev": {
         "pestphp/pest": "^2.15",
