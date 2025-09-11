@@ -1,42 +1,46 @@
-# :package_description
+# PHP wrapper for integrating with e-conomic for woocommerce
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-[![Tests](https://img.shields.io/github/actions/workflow/status/:vendor_slug/:package_slug/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/:vendor_slug/:package_slug/actions/workflows/run-tests.yml)
-[![Total Downloads](https://img.shields.io/packagist/dt/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-<!--delete-->
----
-This package can be used as to scaffold a framework agnostic package. Follow these steps to get started:
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/morning-train/woocommerce-economic.svg?style=flat-square)](https://packagist.org/packages/morning-train/woocommerce-economic)
+[![Tests](https://img.shields.io/github/actions/workflow/status/morning-train/woocommerce-economic/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/morning-train/woocommerce-economic/actions/workflows/run-tests.yml)
+[![Total Downloads](https://img.shields.io/packagist/dt/morning-train/woocommerce-economic.svg?style=flat-square)](https://packagist.org/packages/morning-train/woocommerce-economic)
 
-1. Press the "Use template" button at the top of this repo to create a new repo with the contents of this skeleton
-2. Run "php ./configure.php" to run a script that will replace all placeholders throughout all the files
-3. Have fun creating your package.
-4. If you need help creating a package, consider picking up our <a href="https://laravelpackage.training">Laravel Package Training</a> video course.
----
-<!--/delete-->
-This is where your description should go. Try and limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/:package_name.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/:package_name)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+This is a wrapper for integrating with e-conomic for woocommerce using the [WP-Economic Package](https://github.com/Morning-Train/wp-e-conomic)
 
 ## Installation
 
 You can install the package via composer:
 
 ```bash
-composer require :vendor_slug/:package_slug
+composer require morningtrain/woocommerce-economic
 ```
 
 ## Usage
 
+### Setup
+First, you need to setup the Economic API credentials by using the `Economic::setup` method. This is typically done in your theme's `functions.php` file or a custom plugin.
+
+Then you can initialize the Economic API by calling the `WoocommerceEconomic::init()` method. The `WoocommerceEconomic` class provides methods to interact with the e-conomic API specifically for WooCommerce.
+
+An example of how to set up the Economic API credentials, where you can define the `ECONOMIC_APP_SECRET_TOKEN` and `ECONOMIC_GRANT_TOKEN` in your `wp-config.php` file:
+
 ```php
-$skeleton = new VendorName\Skeleton();
-echo $skeleton->echoPhrase('Hello, VendorName!');
+if (defined('ECONOMIC_APP_SECRET_TOKEN') && defined('ECONOMIC_GRANT_TOKEN')) {
+    Economic::setup(
+        ECONOMIC_APP_SECRET_TOKEN,
+        ECONOMIC_GRANT_TOKEN
+    );
+    WoocommerceEconomic::init();
+}
 ```
+
+### Filters
+
+```php
+TODO: Add documentation for filters
+```
+
+### Woocommerce
+TODO: add documentation for woocommerce usage
 
 ## Testing
 
@@ -58,7 +62,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [:author_name](https://github.com/:author_username)
+- [Lars Rasmussen](https://github.com/larasmorningtrain)
 - [All Contributors](../../contributors)
 
 ## License

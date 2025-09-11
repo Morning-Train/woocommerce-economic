@@ -1,0 +1,40 @@
+<?php
+
+namespace Morningtrain\WoocommerceEconomic\Services;
+
+use Morningtrain\Economic\Services\EconomicLoggerService;
+use Morningtrain\WoocommerceEconomic\Woocommerce\OrderService;
+
+class ActionScheduleService
+{
+    public const CREATE_INVOICE = 'mt-wc-economic/create-invoice';
+
+    public static function addCreateInvoiceJob(\WC_Order $order): void
+    {
+        \as_schedule_single_action(time(), static::CREATE_INVOICE, [$order->get_id()]);
+    }
+
+    public static function handleCreateInvoiceJob(int $orderId): void
+    {
+        $order = \wc_get_order($orderId);
+
+        $paymentMethod = wc_get_payment_gateway_by_order($orderId);
+
+        try {
+            OrderService::createInvoice($order, $paymentMethod);
+
+            $order->add_order_note(__('<strong><u>Ordren er oprettet i Economic.</u></strong>', 'mt-wc-economic'));
+        } catch (\Exception $e) {
+            EconomicLoggerService::critical('Could not create invoice', [
+                'exception' => $e,
+            ]);
+
+            $order->add_order_note(sprintf(
+                __('<strong><u>Kunne ikke oprette ordre i Economic.</u></strong><br />%s', 'mt-wc-economic'),
+                method_exists($e, 'getDetailedMessage') ? $e->getDetailedMessage() : $e->getMessage(),
+            ));
+            $order->update_status('failed');
+        }
+
+    }
+}
